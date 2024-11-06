@@ -26,3 +26,6 @@ Thumbs.db
 *.log
 
 src/main/resources
+
+# vscode
+.vscode
