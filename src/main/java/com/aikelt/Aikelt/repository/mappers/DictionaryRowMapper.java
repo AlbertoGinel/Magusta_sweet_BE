@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
             dictionaryWord.setId((UUID) rs.getObject("id")); // Use getObject for UUID
             dictionaryWord.setEstonian(rs.getString("estonian"));
             dictionaryWord.setType(rs.getString("type"));
-            dictionaryWord.setCase_D(rs.getString("case_D")); // Renamed from 'case' to 'case_D'
+            dictionaryWord.setCase_D(rs.getString("case_D"));
             dictionaryWord.setNumber(rs.getString("number"));
             dictionaryWord.setBasicForm(rs.getString("basic_form"));
             dictionaryWord.setTense(rs.getString("tense"));

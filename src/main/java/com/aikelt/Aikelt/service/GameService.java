@@ -1,16 +1,12 @@
 package com.aikelt.Aikelt.service;
 
-import com.aikelt.Aikelt.dto.GameSolvedResponse;
-import com.aikelt.Aikelt.dto.InitialSentenceResponse;
 import com.aikelt.Aikelt.model.DictionaryWord;
-import com.aikelt.Aikelt.model.EstonianWord;
 import com.aikelt.Aikelt.model.Game;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.*;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,12 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class GameService {
 
-        private final ChatGPTService chatGPTService;
         private final WordService wordService;
         private final OpenAIService openAIService;
 
-        public GameService(ChatGPTService chatGPTService, WordService wordService, OpenAIService openAIService) {
-                this.chatGPTService = chatGPTService;
+        @Autowired
+        public GameService(WordService wordService, OpenAIService openAIService) {
                 this.wordService = wordService;
                 this.openAIService = openAIService;
         }
@@ -40,17 +35,16 @@ public class GameService {
                 }
                 String seeds = wordService.findSample(5, 10, user);
 
-                System.out.println("\u001B[31mseeds: " + seeds + "\u001B[0m");
 
                 JSONObject randomSentence = openAIService.randomSentence(type.toString(), length, seeds);
                 Integer tokens = randomSentence.getJSONObject("usage").getInt("total_tokens");
                 String sentence = randomSentence.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+
                 JSONObject translateSentence = openAIService.translateSentence(type.toString(), sentence);
                 Integer tokens2 = translateSentence.getJSONObject("usage").getInt("total_tokens");
+
                 String translate = translateSentence.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
                 Game game = new Game(type, sentence, tokens + tokens2, length, seeds, translate, user);
-
-                //hay que filtrar las palablas
 
                 gameMap.put(user, game);
                 this.updateGameEEWords(user);
@@ -74,6 +68,8 @@ public class GameService {
                         estonianSentence = game.getTranslation();
                 }
 
+                System.out.println("\u001B[33mThe Estonian sentence is: " + estonianSentence + "\u001B[0m");
+
                 // Check if the estonianSentence is not null or empty
                 if (estonianSentence != null && !estonianSentence.isEmpty()) {
                         // Split the sentence into words and remove any commas or periods
@@ -85,6 +81,8 @@ public class GameService {
 
                         // Loop through each word in estonianWords
                         for (String word : estonianWords) {
+
+
                                 // Update the dictionary for the word and get the DictionaryWord object
                                 DictionaryWord dictionaryWord = wordService.updateDictionaryByWord(word);
 

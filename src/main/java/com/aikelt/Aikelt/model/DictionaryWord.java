@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -65,6 +66,8 @@ public class DictionaryWord {
     @Column(name = "created", nullable = false)
     private Timestamp created;
 
+    private static final Set<String> ALLOWED_CASES = Set.of("nominative", "genitive", "partitive", "accusative", "dative", "ablative", "allative", "elative", "inessive", "adessive", "translative", "essive", "abessive", "comitative");
+
     // Constructors, Getters, and Setters
     public DictionaryWord() {
         this.created = new Timestamp(System.currentTimeMillis());
@@ -100,7 +103,11 @@ public class DictionaryWord {
     }
 
     public void setCase_D(String case_D) {
-        this.case_D = case_D;
+        if (case_D != null && ALLOWED_CASES.contains(case_D.toLowerCase())) {
+            this.case_D = case_D;
+        } else {
+            this.case_D = null; // Set to null if not allowed
+        }
     }
 
     public String getNumber() {

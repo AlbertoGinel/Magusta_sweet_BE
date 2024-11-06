@@ -6,6 +6,7 @@ import com.aikelt.Aikelt.repository.JdbcWordRepository;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ public class WordService {
     private final JdbcWordRepository wordRepository;
     private final OpenAIService openAIService;
 
+    @Autowired
     public WordService(JdbcWordRepository wordRepository, OpenAIService openAIService) {
         this.wordRepository = wordRepository;
         this.openAIService = openAIService;
@@ -135,7 +137,7 @@ public class WordService {
         return wordRepository.getHaloRanks(userId);
     }
 
-    public boolean showableWord(UUID userId, String word){
+    public boolean showableWord(UUID userId, String word) {
         return wordRepository.showableWord(userId, word);
     }
 

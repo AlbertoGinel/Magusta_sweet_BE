@@ -34,10 +34,11 @@ public class OpenAIService {
         requestBody.put("function_call", null);
         requestBody.put("temperature", 1.0);
 
+
         // Make the API call and get the response
         try {
             String response = webClient.post()
-                    //.uri("/chat/completions") // Ensure this is the correct endpoint
+                    .uri("https://api.openai.com/v1/chat/completions")
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
                     .bodyValue(requestBody)

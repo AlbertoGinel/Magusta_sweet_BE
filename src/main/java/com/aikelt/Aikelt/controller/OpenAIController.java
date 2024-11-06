@@ -1,15 +1,10 @@
 package com.aikelt.Aikelt.controller;
 
-import com.aikelt.Aikelt.dto.SentenceRequest;
-import com.aikelt.Aikelt.dto.TranslationRequest;
-import com.aikelt.Aikelt.model.Game;
-import com.aikelt.Aikelt.service.GameService;
 import com.aikelt.Aikelt.service.OpenAIService;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,15 +16,6 @@ public class OpenAIController {
     public OpenAIController(OpenAIService openAIService){
         this.openAIService = openAIService;
     }
-
-    @PostMapping("/translateSentence")
-    public  void   translateSentence(@RequestBody TranslationRequest request) {
-        String language = request.getLanguage();
-        String sentence = request.getSentence();
-
-        System.out.println("Translate: " + openAIService.translateSentence(language,sentence));
-    }
-
 
     @PostMapping("/wordAnalysis")
     public Mono<String> wordAnalysis(@RequestBody Map<String, String> body) {
@@ -66,5 +52,21 @@ public class OpenAIController {
         return Mono.just(response.toString());
     }
 
+    @PostMapping("/randomSentence")
+    public Mono<String> randomSentence(@RequestBody Map<String, Object> body) {
+        // Extract parameters from the request body
+        String language = (String) body.get("language");
+        int length = (Integer) body.get("length");
+        String meaningsToUse = (String) body.get("meaningsToUse");
+
+        // Call the service to generate the sentence
+        return Mono.fromCallable(() -> {
+            // Assuming the service method 'randomSentence' takes language, length, and meaningsToUse as parameters
+            JSONObject sentence = openAIService.randomSentence(language, length, meaningsToUse);
+
+            // Return the generated sentence as a string (or any other required transformation)
+            return sentence.toString();
+        });
+    }
 }
 

@@ -19,6 +19,7 @@ import com.aikelt.Aikelt.repository.mappers.PersonalWordRowMapper;
 import org.hibernate.boot.model.source.internal.hbm.AttributesHelper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -132,7 +133,9 @@ public class JdbcWordRepository {
 
         // Get current time and format it in ISO-8601
         LocalDateTime now = LocalDateTime.now();
-        String formattedTimestamp = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        Timestamp formattedTimestamp = Timestamp.valueOf(now);
+
 
         try {
             // Check if the Estonian word already exists, fetch a single result
@@ -209,9 +212,8 @@ public class JdbcWordRepository {
 
             // Get current time and format it in ISO-8601
             LocalDateTime now = LocalDateTime.now();
-            String formattedTimestamp = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-            //System.out.println("\u001B[34mInserting PersonalWord - ID: " + id + ", User ID: " + personalWord.getUserId() + ", Dictionary Word ID: " + personalWord.getId() + ", Timestamp: " + formattedTimestamp + ", Estonian: " + personalWord.getEstonian() + ", Halo: " + personalWord.getHalo() + ", Level: " + 1 + ", State: LIVE\u001B[0m");
+            Timestamp formattedTimestamp = Timestamp.valueOf(now);
 
             // Insert a new PersonalWord with generated ID and current timestamp
             jdbcClient.sql(insertSql)
@@ -272,24 +274,30 @@ public class JdbcWordRepository {
 
     public boolean showableWord(UUID userId, String word) {
         // SQL query to check for the presence and state of the word for the user
-
         String sql = """
-        SELECT CASE 
-                   WHEN COUNT(*) = 0 THEN TRUE    -- Word not found for user, so it's showable
-                   WHEN state = 'LIVE' THEN TRUE  -- Word found and is in 'live' state, so it's showable
-                   ELSE FALSE                     -- Word found but not in 'live' state
-               END AS is_showable
-        FROM PersonalWord
-        WHERE userId = :userId AND estonian = :word
-    """;
+            SELECT CASE 
+                       WHEN p.id IS NULL THEN TRUE    -- Word not found in the DB, showable
+                       WHEN p.state = 'LIVE' THEN TRUE  -- Word found in 'LIVE' state, showable
+                       ELSE FALSE                     -- Word found but not in 'LIVE' state, not showable
+                   END AS is_showable
+            FROM (SELECT 1) AS dummy      -- A dummy table to allow the LEFT JOIN when no row exists for the word
+            LEFT JOIN PersonalWord p
+            ON p.userId = :userId AND p.estonian = :word
+        """;
 
-        // Execute the query and return the result as a boolean
-        return jdbcClient.sql(sql)
-                .param("userId", userId)
-                .param("word", word)
-                .query(Boolean.class)
-                .single(); // Returns true if showable, false otherwise
+        try {
+            // Execute the query and return the result as a boolean
+            return jdbcClient.sql(sql)
+                    .param("userId", userId)
+                    .param("word", word)
+                    .query(Boolean.class)
+                    .single(); // Returns true if showable, false otherwise
+        } catch (EmptyResultDataAccessException e) {
+            // Handle case where no result is found; return a default value
+            return false; // or true if that aligns better with your logic
+        }
     }
+
 
     private int calculateNewHalo(int level, int[] ranks) {
         int newHalo = 0;
@@ -318,8 +326,6 @@ public class JdbcWordRepository {
 
     public void updatePersonalWord(UUID userID, UUID word, int level, int[] ranks, String estonian) {
 
-
-
         try {
 
             int count = jdbcClient.sql("SELECT COUNT(*) FROM PERSONALWORD WHERE userID = :userId AND dictionarywordid = :word")
@@ -336,19 +342,11 @@ public class JdbcWordRepository {
                 String newState = (level == 6) ? "MASTERED" : "LIVE";
 
                 LocalDateTime now = LocalDateTime.now();
-                String formattedTimestamp = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+                Timestamp formattedTimestamp = Timestamp.valueOf(now);
 
                 String updateQuery = "UPDATE PERSONALWORD SET lastAppearance = :lastAppearance, halo = :newHalo, state = :newState " +
                         "WHERE userID = :userID AND dictionarywordid = :word";
-
-                System.out.println("\u001B[31m" + "Executing SQL Query: " + updateQuery + "\n" +
-                        "Parameters:\n" +
-                        "lastAppearance = " + formattedTimestamp + "\n" +
-                        "newHalo = " + newHalo + "\n" +
-                        "newState = " + newState + "\n" +
-                        "userID = " + userID + "\n" +
-                        "dictionarywordid = " + word + "\u001B[0m");
-
 
                 jdbcClient.sql(updateQuery)
                         .param("lastAppearance", formattedTimestamp)  // Use the formatted timestamp
@@ -366,10 +364,4 @@ public class JdbcWordRepository {
             System.out.println("Error updating personal word: " + e.getMessage());
         }
     }
-
-
-
 }
-
-
-
