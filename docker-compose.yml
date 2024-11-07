@@ -36,9 +36,14 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com  # Replace with your email
-      PGADMIN_DEFAULT_PASSWORD: admin           # Replace with a strong password
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5000:80"
     depends_on:
-      - db # ensures pgAdmin starts after the database is ready
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      retries: 3
+      timeout: 10s
