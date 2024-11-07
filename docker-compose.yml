@@ -43,7 +43,10 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: ["CMD", "pg_isready", "-h", "db", "-U", "myuser"]
       interval: 30s
       retries: 3
       timeout: 10s
+
+volumes:
+  postgres_data:
