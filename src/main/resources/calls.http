@@ -1,0 +1,294 @@
+#WORDS
+
+GET http://localhost:8080/api/words/allDictionaryWords HTTP/1.1
+content-type: application/json
+
+###
+
+GET http://localhost:8080/api/words/allPersonalWords HTTP/1.1
+content-type: application/json
+
+###
+
+POST http://localhost:8080/api/words/allPersonalWordsbyID HTTP/1.1
+content-type: application/json
+
+{
+  "id": "c38f66aa-d08c-464d-9471-53b2f81c081f"
+}
+
+###
+
+POST http://localhost:8080/api/words/findSample HTTP/1.1
+content-type: application/json
+
+{
+  "sampleLength": 5,
+  "firstGroup": 10,
+  "usedID": "c38f66aa-d08c-464d-9471-53b2f81c081f"
+}
+
+###
+
+POST http://localhost:8080/api/words/searchDictionaryWord HTTP/1.1
+content-type: application/json
+
+{
+  "targetWord": "vabandust"
+}
+
+###
+
+###error
+POST http://localhost:8080/api/words/updateDictionaryByWord HTTP/1.1
+content-type: application/json
+
+{
+  "targetWord": "tuletõrjujat"
+}
+
+###
+
+POST http://localhost:8080/api/words/createDictionaryWord HTTP/1.1
+content-type: application/json
+
+{
+    "estonian": "sõna",
+    "type": "noun",
+    "case_D": "nominative",
+    "number": "singular",
+    "basicForm": "sõna",
+    "tense": null,
+    "person": null,
+    "degree": null,
+    "parts": "",
+    "level_D": 1,
+    "englishTranslation": "word",
+    "basicWordId": null
+}
+
+###
+
+POST http://localhost:8080/api/words/getHaloRanks HTTP/1.1
+content-type: application/json
+
+{
+  "usedID": "c38f66aa-d08c-464d-9471-53b2f81c081f"
+}
+
+###
+
+POST http://localhost:8080/api/words/getHaloRanks HTTP/1.1
+content-type: application/json
+
+{
+  "usedID": "c38f66aa-d08c-464d-9471-53b2f81c081f"
+}
+
+###
+
+POST http://localhost:8080/api/words/showableWord HTTP/1.1
+content-type: application/json
+
+{
+  "usedID": "c38f66aa-d08c-464d-9471-53b2f81c081f",
+  "word": "siin"
+}
+
+###
+
+
+###
+
+
+
+#ENDWORDS
+
+#OPENAI
+
+###
+
+POST http://localhost:8080/api/openai/wordAnalysis HTTP/1.1
+content-type: application/json
+
+{
+  "word": "kukkus"
+}
+
+###
+
+POST http://localhost:8080/api/openai/resolveSentence HTTP/1.1
+content-type: application/json
+
+{
+  "word": "tuletõrjujat"
+}
+
+#ENDOPENAI
+
+
+###
+
+
+
+POST http://localhost:8080/api/sentences/resolve HTTP/1.1
+content-type: application/json
+
+{
+  "original": "Ma tulen, et mängida ja kirjutada",
+  "human_response": "Im going, for playing and writing",
+  "type": "estonian"
+}
+
+###
+
+POST http://localhost:8080/api/game/resolve HTTP/1.1
+content-type: application/json
+
+{
+  "human_response": "ma lugema raamat"
+}
+
+###
+
+POST http://localhost:8080/api/sentences/completion HTTP/1.1
+Content-Type: application/json
+
+{
+
+    "content": "Original: Jah, sõber, õpetaja õpetab Human_response: Yes, friend, the teacher teaches\nTranslate original to English in English_Translation. For each word in original, include its basic form and rate how closely the meaning matches any word in the Human_response on a scale from 0 to 10, where 10 indicates a direct or close conceptual match. return a JSON structure in content:{English_Translation:,Estonian_words:[{Word:,Basic_Form:,Achieved:0}]}"
+}
+
+###
+
+#GAME
+
+
+POST  http://localhost:8080/api/game/getgame HTTP/1.1
+content-type: application/json
+
+{
+  "user": "c38f66aa-d08c-464d-9471-53b2f81c081f"
+}
+
+###
+
+POST http://localhost:8080/api/game/creategame HTTP/1.1
+content-type: application/json
+
+{
+  "type": "ESTONIAN",
+  //"type": "ENGLISH",
+  "length": 4,
+  "user": "c38f66aa-d08c-464d-9471-53b2f81c081f"
+
+}
+
+###
+
+POST http://localhost:8080/api/game/gameResponse HTTP/1.1
+content-type: application/json
+
+{
+  "user": "c38f66aa-d08c-464d-9471-53b2f81c081f",
+  "humanResponse": "there is a small room"
+}
+
+###
+
+
+POST http://localhost:8080/api/game/finishGame HTTP/1.1
+Content-Type: application/json
+
+{
+  "userID": "c38f66aa-d08c-464d-9471-53b2f81c081f",
+  "wordsList": [
+    {
+      "estonian": "väike",
+      "id": "550e8400-e29b-41d4-a716-446655440114",
+      "level": 6
+    },
+    {
+      "estonian": "laps",
+      "id": "4f6cb981-0d11-4a78-bc04-91843b33ee72",
+      "level": 6
+    },
+    {
+      "estonian": "armastama",
+      "id": "088e68e5-10f2-4f8a-8c96-2f8f276ddab8",
+      "level": 6
+    },
+    {
+      "estonian": "laulda",
+      "id": "2ec03983-4f15-467d-9c68-d0ccc2736fa8",
+      "level": 6
+    }
+  ]
+}
+
+
+###
+
+POST http://localhost:8080/api/game/updateGameEEWords HTTP/1.1
+content-type: application/json
+
+{
+  "user": "c38f66aa-d08c-464d-9471-53b2f81c081f"
+}
+
+
+###
+
+POST http://localhost:8080/api/openai/randomSentence HTTP/1.1
+Content-Type: application/json
+
+{
+  "language": "ENGLISH",
+  "length": 6,
+  "meaningsToUse": "lugema, koer"
+}
+
+
+###
+
+POST http://localhost:8080/api/openai/translateSentence HTTP/1.1
+content-type: application/json
+
+{
+  "language": "ENGLISH",
+  "sentence": "I read a book"
+}
+
+###
+
+POST http://localhost:8080/api/openai/translateSentence HTTP/1.1
+content-type: application/json
+
+{
+  "language": "ESTONIAN",
+  "sentence": "Lugesin raamatut"
+}
+
+###
+
+POST http://localhost:8080/api/openai/scoreResponse HTTP/1.1
+content-type: application/json
+
+{
+  "language": "ESTONIAN",
+  "translation": "Väike tuba magab",
+  "humanResponse": "vake tuva sleeps"
+}
+
+###
+
+#sonaveeb
+
+
+
+GET https://sonaveeb.ee/api/endpoints HTTP/1.1
+content-type: application/json
+
+
+
+
