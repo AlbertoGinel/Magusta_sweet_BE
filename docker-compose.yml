@@ -33,18 +33,6 @@ services:
       timeout: 5s
       retries: 5
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5000:80"
-    depends_on:
-      - db
-    networks:
-      - mynetwork
-
 networks:
   mynetwork:
     driver: bridge
