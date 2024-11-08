@@ -27,12 +27,6 @@ services:
       - "5432:5432" # map Postgres port to local (optional)
     volumes:
       - postgres_data:/var/lib/postgresql/data # persistent storage
-
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U myuser" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     restart: unless-stopped
 
   pgadmin:
