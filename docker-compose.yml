@@ -13,9 +13,9 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_started
+    restart: unless-stopped
 
-    #restart: on-failure
 
   db:
     image: postgres:13
@@ -34,6 +34,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   pgadmin:
     image: dpage/pgadmin4
@@ -44,12 +45,12 @@ services:
       - "5000:80"
     depends_on:
       - db
-    networks:
-      - mynetwork
+    restart: unless-stopped
 
 networks:
-  mynetwork:
-    driver: bridge
+  default:
+    name: mynetwork
+    external: true
 
 volumes:
   postgres_data:

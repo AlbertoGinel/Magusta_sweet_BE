@@ -1,5 +1,16 @@
 #WORDS
 
+
+GET https://magusta-sweet-be.onrender.com/debug/ping HTTP/1.1
+content-type: application/json
+
+###
+
+GET https://magusta-sweet-be.onrender.com/debug/datasource-url HTTP/1.1
+content-type: application/json
+
+###
+
 GET http://localhost:8080/api/words/allDictionaryWords HTTP/1.1
 content-type: application/json
 
@@ -92,7 +103,7 @@ content-type: application/json
 
 {
   "usedID": "c38f66aa-d08c-464d-9471-53b2f81c081f",
-  "word": "siin"
+  "word": "väike"
 }
 
 ###
