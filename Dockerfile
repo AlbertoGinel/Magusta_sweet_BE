@@ -20,3 +20,9 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 ENV OPENAI_API_KEY=${OPENAI_API_KEY}
 
+
+2. Port Mismatch
+
+    Problem: Render may expect your service to run on a specific port (often 10000 for HTTP by default), but if your Tomcat server is configured for another port, Render might not connect properly, leading to repeated connection attempts and EOFException.
+    Solution: Confirm that Tomcat is set to listen on the correct port. In your Dockerfile or docker-compose.yml, make sure the correct port (e.g., 8080 if you specified it) is both exposed and mapped to Render’s expected port.
+
