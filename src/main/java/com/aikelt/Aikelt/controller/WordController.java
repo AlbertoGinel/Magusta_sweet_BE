@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/words")
 public class WordController {
 
@@ -23,19 +22,16 @@ public class WordController {
         this.wordService = wordService;
     }
 
-    @CrossOrigin("http://localhost:3000")
     @GetMapping("/allDictionaryWords")
     List<DictionaryWord> findAllDictionaryWords() {
         return wordService.findAllDictionaryWords();
     }
 
-    @CrossOrigin("http://localhost:3000")
     @GetMapping("/allPersonalWords")
     List<PersonalWord> findAllPersonalWords() {
         return wordService.findAllPersonalWords();
     }
 
-    @CrossOrigin("http://localhost:3000")
     @PostMapping("/allPersonalWordsbyID")
     public List<PersonalWord> findAllPersonalWordsbyID(@RequestBody Map<String, Object> requestBody) {
         // Extract the UUID from the request body
@@ -45,7 +41,6 @@ public class WordController {
         return wordService.findAllPersonalWordsByUser(id);
     }
 
-    @CrossOrigin("http://localhost:3000")
     @PostMapping("/findSample")
     public String findSample(@RequestBody Map<String, Object> requestBody) {
         // Extract values from the request body
