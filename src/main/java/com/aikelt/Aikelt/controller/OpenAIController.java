@@ -2,6 +2,7 @@ package com.aikelt.Aikelt.controller;
 
 import com.aikelt.Aikelt.service.OpenAIService;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -13,6 +14,7 @@ public class OpenAIController {
 
     private final OpenAIService openAIService;
 
+    @Autowired
     public OpenAIController(OpenAIService openAIService){
         this.openAIService = openAIService;
     }

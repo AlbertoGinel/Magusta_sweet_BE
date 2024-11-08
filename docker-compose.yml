@@ -10,12 +10,12 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/magustadatabase
       - SPRING_DATASOURCE_USERNAME=myuser
       - SPRING_DATASOURCE_PASSWORD=mypassword
-
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       db:
         condition: service_healthy
 
-    restart: on-failure
+    #restart: on-failure
 
   db:
     image: postgres:13
