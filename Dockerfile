@@ -13,8 +13,6 @@ RUN ./mvnw clean package -DskipTests
 FROM openjdk:17-jdk
 WORKDIR /usr/local/app
 
-# Install the libtcnative-1 library
-RUN apt-get update && apt-get install -y libtcnative-1
 
 # Copy the built JAR file from the builder stage
 COPY --from=builder /usr/src/app/target/*.jar app.jar
