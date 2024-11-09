@@ -8,8 +8,8 @@ services:
       - "8080:8080" # map app port to local
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/magustadatabase
-      - SPRING_DATASOURCE_USERNAME=myuser
-      - SPRING_DATASOURCE_PASSWORD=mypassword
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       db:
@@ -20,8 +20,8 @@ services:
     image: postgres:13
     environment:
       POSTGRES_DB: magustadatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
 
     ports:
       - "5432:5432" # map Postgres port to local (optional)
