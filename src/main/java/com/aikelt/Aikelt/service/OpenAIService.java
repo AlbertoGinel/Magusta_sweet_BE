@@ -17,7 +17,7 @@ public class OpenAIService {
 
     private final WebClient webClient;
 
-    // Inject API key from application.properties
+    // Inject API key from
     @Value("${openai.api.key}")
     private String apiKey;
 

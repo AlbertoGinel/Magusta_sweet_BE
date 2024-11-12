@@ -41,4 +41,13 @@ CREATE TABLE PersonalWord (
     CONSTRAINT fk_dictionaryWord FOREIGN KEY (dictionaryWordId) REFERENCES DictionaryWord(id) ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS users;
 
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(255) CHECK (role IN ('PLAYER', 'ADMIN')),
+    enabled BOOLEAN DEFAULT TRUE,
+    tokensLeft NUMERIC NOT NULL
+);

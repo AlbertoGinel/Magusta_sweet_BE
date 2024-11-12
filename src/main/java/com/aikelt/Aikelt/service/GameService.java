@@ -5,6 +5,7 @@ import com.aikelt.Aikelt.model.Game;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public class GameService {
         private final OpenAIService openAIService;
 
         @Autowired
-        public GameService(WordService wordService, OpenAIService openAIService) {
+        public GameService(WordService wordService, @Lazy OpenAIService openAIService) {
                 this.wordService = wordService;
                 this.openAIService = openAIService;
         }

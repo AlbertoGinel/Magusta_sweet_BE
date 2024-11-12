@@ -3,8 +3,14 @@ package com.aikelt.Aikelt.controller;
 import com.aikelt.Aikelt.model.Game;
 import com.aikelt.Aikelt.service.GameService;
 import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,18 +21,29 @@ public class GameController {
 
     private final GameService gameService;
 
+    @Autowired
     public GameController(GameService gameService) {
         this.gameService = gameService;
     }
 
+    @PreAuthorize("hasRole('PLAYER') or hasRole('ADMIN')")
     @PostMapping("/getgame")
-    public Game getGame(@RequestBody Map<String, Object> requestBody) {
+    public Game getGame(@RequestBody Map<String, Object> requestBody, Principal principal) {
+        UUID requestedUserId = UUID.fromString((String) requestBody.get("user"));
 
-        UUID user = UUID.fromString((String) requestBody.get("user"));
+        // Retrieve the currently authenticated user's ID from Principal
+        UUID authenticatedUserId = UUID.fromString(principal.getName());
 
-        return gameService.getGame(user);
+        // If the user is a PLAYER, they should only be allowed to retrieve their own game data
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PLAYER"))) {
+            if (!authenticatedUserId.equals(requestedUserId)) {
+                throw new AccessDeniedException("Players can only access their own game data.");
+            }
+        }
+
+        // For admins, no additional check is necessary if they are allowed to retrieve any game data
+        return gameService.getGame(requestedUserId);
     }
-
 
     @PostMapping("/creategame")
     public Game createGame(@RequestBody Map<String, Object> requestBody) {
@@ -78,6 +95,8 @@ public class GameController {
         // Call the service with the extracted userID and wordsList
         gameService.finishGame(wordsList, userID);
     }
+
+
 
 
 

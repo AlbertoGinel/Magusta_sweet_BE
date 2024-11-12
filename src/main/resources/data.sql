@@ -36,3 +36,8 @@ INSERT INTO PersonalWord (id, userId, dictionaryWordId, lastAppearance, estonian
 ('550e8400-e29b-41d4-a716-446655440011', 'c38f66aa-d08c-464d-9471-53b2f81c081f', '550e8400-e29b-41d4-a716-446655440110', '2024-10-16T00:00:00', 'õun', 49, 1, 'LIVE'),
 ('550e8400-e29b-41d4-a716-446655440012', 'c38f66aa-d08c-464d-9471-53b2f81c081f', '550e8400-e29b-41d4-a716-446655440121', '2024-10-16T00:00:00', 'tuba', 26, 1, 'MASTERED'),
 ('550e8400-e29b-41d4-a716-446655440013', 'c38f66aa-d08c-464d-9471-53b2f81c081f', '550e8400-e29b-41d4-a716-446655440122', '2024-10-16T00:00:00', 'linn', 99, 1, 'MASTERED');
+
+INSERT INTO users (id, username, password, role, enabled, tokensLeft) VALUES
+('c38f66aa-d08c-464d-9471-53b2f81c081f', 'Alberto', 'Alberto', 'ADMIN', TRUE, 0),
+('b8a4ec3e-4bbf-4267-9756-12a6efbdb8ea', 'Test1', 'Test1', 'PLAYER', TRUE, 0),
+('d99a8b18-9b8f-4b4e-9cd7-8be12e372f22', 'Test2', 'Test2', 'PLAYER', TRUE, 0);

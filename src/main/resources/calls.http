@@ -1,3 +1,32 @@
+#CALLSON https://magusta-sweet-be.onrender.com/
+
+
+GET https://magusta-sweet-be.onrender.com/debug/ping HTTP/1.1
+content-type: application/json
+
+###
+
+POST https://magusta-sweet-be.onrender.com/api/game/creategame HTTP/1.1
+content-type: application/json
+
+{
+  "type": "ESTONIAN",
+  //"type": "ENGLISH",
+  "length": 4,
+  "user": "c38f66aa-d08c-464d-9471-53b2f81c081f"
+
+}
+
+###
+#LOGIN
+
+POST https://magusta-sweet-be.onrender.com/api/auth/login
+Content-Type: application/json
+{
+    "username": "user123",
+    "password": "securePassword"
+}
+
 #WORDS
 
 GET http://localhost:8080/debug/ping HTTP/1.1
@@ -5,10 +34,6 @@ content-type: application/json
 
 ###
 
-GET https://magusta-sweet-be.onrender.com/debug/ping HTTP/1.1
-content-type: application/json
-
-###
 
 GET https://magusta-sweet-be.onrender.com/debug/datasource-url HTTP/1.1
 content-type: application/json
