@@ -2,6 +2,7 @@ package com.aikelt.Aikelt.service;
 
 import com.aikelt.Aikelt.model.User;
 import com.aikelt.Aikelt.repository.JdbcUserRepository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Primary
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final JdbcUserRepository userRepository;
