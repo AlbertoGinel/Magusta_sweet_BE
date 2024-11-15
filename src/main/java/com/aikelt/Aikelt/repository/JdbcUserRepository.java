@@ -29,12 +29,11 @@ public class JdbcUserRepository {
         return jdbcTemplate.query(sql, userRowMapper);
     }
 
-    // Find a user by username
     public Optional<User> findUserByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
         try {
-            User user = jdbcTemplate.queryForObject(sql, userRowMapper, username);
-            return Optional.ofNullable(user);
+            List<User> users = jdbcTemplate.query(sql, userRowMapper, username);
+            return users.stream().findFirst(); // Return the first user, wrapped in an Optional
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();  // No user found
         }
