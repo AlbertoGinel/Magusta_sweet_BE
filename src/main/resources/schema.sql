@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS DictionaryWord;
+DROP TABLE IF EXISTS DictionaryWord CASCADE;
 
 CREATE TABLE DictionaryWord (
     id UUID PRIMARY KEY,
@@ -22,7 +22,7 @@ CREATE TABLE DictionaryWord (
 ALTER TABLE DictionaryWord
     ADD CONSTRAINT fk_basicWordId FOREIGN KEY (basicWordId) REFERENCES DictionaryWord(id) ON DELETE SET NULL;
 
-DROP TABLE IF EXISTS PersonalWord;
+DROP TABLE IF EXISTS PersonalWord CASCADE;
 
 CREATE TABLE PersonalWord (
     id UUID PRIMARY KEY,
@@ -41,7 +41,7 @@ CREATE TABLE PersonalWord (
     CONSTRAINT fk_dictionaryWord FOREIGN KEY (dictionaryWordId) REFERENCES DictionaryWord(id) ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE users (
     id UUID PRIMARY KEY,
