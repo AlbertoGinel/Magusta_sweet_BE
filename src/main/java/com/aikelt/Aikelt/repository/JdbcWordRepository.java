@@ -224,7 +224,7 @@ public class JdbcWordRepository {
                     .param(5, personalWord.getEstonian())            // Estonian word
                     .param(6, personalWord.getHalo())                // Halo value
                     .param(7, 1)               // Level
-                    .param(8, "LIVE")    // State as String
+                    .param(8, personalWord.getState())    // State as String
                     .update();
 
             // Return the generated UUID of the new PersonalWord
@@ -324,6 +324,7 @@ public class JdbcWordRepository {
         return newHalo;
     }
 
+
     public void updatePersonalWord(UUID userID, UUID word, int level, int[] ranks, String estonian) {
 
         try {
@@ -357,7 +358,10 @@ public class JdbcWordRepository {
                         .update();
             } else {
                 // Word doesn't exist, create a new entry
-                PersonalWord newWord = new PersonalWord( userID, word, estonian,newHalo,1, PersonalWord.State.LIVE);
+
+                PersonalWord.State newState = (level == 6) ? PersonalWord.State.MASTERED : PersonalWord.State.LIVE;
+
+                PersonalWord newWord = new PersonalWord( userID, word, estonian,newHalo,1, newState);
                 createPersonalWord(newWord);
             }
         } catch (Exception e) {

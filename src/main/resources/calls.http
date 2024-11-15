@@ -18,7 +18,17 @@ content-type: application/json
 }
 
 ###
-#LOGIN
+
+
+POST http://localhost:8080/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "Alberto",
+    "password": "Alberto"
+}
+
+###
 
 POST https://magusta-sweet-be.onrender.com/api/auth/login
 Content-Type: application/json
@@ -26,6 +36,29 @@ Content-Type: application/json
     "username": "user123",
     "password": "securePassword"
 }
+
+###
+#USERS
+
+GET http://localhost:8080/api/users/getAllUsers HTTP/1.1
+Content-Type: application/json
+
+###
+
+POST http://localhost:8080/api/users/loadUserByUsername HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "Alberto"
+}
+
+###
+
+GET http://localhost:8080/api/words/allPersonalWordsbyID HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjoiQWxiZXJ0byIsInN1YiI6IkFsYmVydG8iLCJpYXQiOjE3MzE2MDY4NDQsImV4cCI6MTczMTYxMDQ0NH0.ZlZefHP1lwAZ6osroQTflBY95WWB_C6xCRhIXVK6kBM
+
+#END_USERS
+###
 
 #WORDS
 
@@ -204,17 +237,15 @@ Content-Type: application/json
 #GAME
 
 
-POST  http://localhost:8080/api/game/getgame HTTP/1.1
-content-type: application/json
+GET  http://localhost:8080/api/game/getgame HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjoiQWxiZXJ0byIsInN1YiI6IkFsYmVydG8iLCJpYXQiOjE3MzE2MDUzMzIsImV4cCI6MTczMTYwODkzMn0.9oUUGBXJG_tfHXRsQjBN4w6nDFui5ZuUq2Z0JnhpqsQ
 
-{
-  "user": "c38f66aa-d08c-464d-9471-53b2f81c081f"
-}
 
 ###
 
 POST http://localhost:8080/api/game/creategame HTTP/1.1
-content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjoiQWxiZXJ0byIsInN1YiI6IkFsYmVydG8iLCJpYXQiOjE3MzE2MDg1MTgsImV4cCI6MTczMTYxMjExOH0.UPF7dt-j5ANd6dbjri787mb5ocva3ttNlBBIDFFQ_JY
+Content-Type: application/json
 
 {
   "type": "ESTONIAN",
@@ -227,10 +258,10 @@ content-type: application/json
 ###
 
 POST http://localhost:8080/api/game/gameResponse HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjoiQWxiZXJ0byIsInN1YiI6IkFsYmVydG8iLCJpYXQiOjE3MzE2MDg1MTgsImV4cCI6MTczMTYxMjExOH0.UPF7dt-j5ANd6dbjri787mb5ocva3ttNlBBIDFFQ_JY
 content-type: application/json
 
 {
-  "user": "c38f66aa-d08c-464d-9471-53b2f81c081f",
   "humanResponse": "there is a small room"
 }
 
@@ -238,10 +269,10 @@ content-type: application/json
 
 
 POST http://localhost:8080/api/game/finishGame HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjoiQWxiZXJ0byIsInN1YiI6IkFsYmVydG8iLCJpYXQiOjE3MzE2MDg1MTgsImV4cCI6MTczMTYxMjExOH0.UPF7dt-j5ANd6dbjri787mb5ocva3ttNlBBIDFFQ_JY
 Content-Type: application/json
 
 {
-  "userID": "c38f66aa-d08c-464d-9471-53b2f81c081f",
   "wordsList": [
     {
       "estonian": "väike",

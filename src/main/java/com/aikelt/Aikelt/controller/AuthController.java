@@ -1,94 +1,58 @@
 package com.aikelt.Aikelt.controller;
 
 import com.aikelt.Aikelt.model.User;
-import com.aikelt.Aikelt.security.JwtTokenProvider;
-import com.aikelt.Aikelt.service.UserService;
+import com.aikelt.Aikelt.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
-
-
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.HashMap;
+
 import java.util.Map;
 
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
-    private final AuthenticationManager authenticationManager;
-    @Autowired
-    private final JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private final UserService userService;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager,
-                          JwtTokenProvider jwtTokenProvider,
-                          UserService userService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
-    }
+    private JwtService jwtService;
 
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody Map<String, String> requestBody) {
-        String username = requestBody.get("username");
-        String password = requestBody.get("password");
-
-        User user = userService.getUserByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!user.isEnabled()) {
-            throw new RuntimeException("User is disabled");
-        }
+    public ResponseEntity<?> authenticateUser(@RequestBody Map<String, Object> requestBody) {
+        // Extract username and password from the request body
+        String username = (String) requestBody.get("username");
+        String password = (String) requestBody.get("password");
 
         try {
-            // Yellow color for the authentication attempt message
-            System.out.println("\u001B[33mAttempting to authenticate user: " + username + "\u001B[0m");
 
-            // Authenticate the user using the username and password
+            // Authenticate the user
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            // Green color for successful authentication
-            System.out.println("\u001B[32mAuthentication successful for user: " + username + "\u001B[0m");
+            // Set the authentication in the context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Continue with token generation and response preparation
-            List<String> roles = authentication.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
+            // Retrieve the principal (user details) from the authentication object
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-            String token = jwtTokenProvider.createToken(username, roles);
+            // You can now access the user details (such as username, authorities, etc.)
+            String jwtToken = jwtService.generateToken(userDetails);
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("username", username);
-            response.put("roles", roles);
-            response.put("tokensLeft", user.getTokensLeft());
-
-            return response;
+            // Return the token as the response
+            return ResponseEntity.ok(Map.of("token", jwtToken));
 
         } catch (Exception e) {
-            // Red color for authentication failure messages
-            System.err.println("\u001B[31mAuthentication failed for user: " + username + "\u001B[0m");
-            System.err.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
-            throw new RuntimeException("Authentication failed", e);
+            // Handle authentication failure
+            return ResponseEntity.status(401).body(Map.of("error", "Authentication failed: " + e.getMessage()));
         }
     }
 }

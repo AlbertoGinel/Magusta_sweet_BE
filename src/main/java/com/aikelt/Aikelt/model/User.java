@@ -1,12 +1,17 @@
 package com.aikelt.Aikelt.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,9 +23,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private Set<Role> authorities;
 
     @Column(nullable = false)
     private boolean enabled = true;
@@ -46,20 +52,21 @@ public class User {
         this.username = username;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Role> authorities) {
+        this.authorities = authorities;
+    }
+
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public boolean isEnabled() {
@@ -78,14 +85,19 @@ public class User {
         this.tokensLeft = tokensLeft;
     }
 
-    public boolean isAdmin() {
-        return this.role == Role.ADMIN;
+    // UserDetails interface methods
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Customize if needed
     }
 
-    // Enum for roles
-    public enum Role {
-        PLAYER,
-        ADMIN
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Customize if needed
     }
 
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Customize if needed
+    }
 }

@@ -37,7 +37,7 @@ INSERT INTO PersonalWord (id, userId, dictionaryWordId, lastAppearance, estonian
 ('550e8400-e29b-41d4-a716-446655440012', 'c38f66aa-d08c-464d-9471-53b2f81c081f', '550e8400-e29b-41d4-a716-446655440121', '2024-10-16T00:00:00', 'tuba', 26, 1, 'MASTERED'),
 ('550e8400-e29b-41d4-a716-446655440013', 'c38f66aa-d08c-464d-9471-53b2f81c081f', '550e8400-e29b-41d4-a716-446655440122', '2024-10-16T00:00:00', 'linn', 99, 1, 'MASTERED');
 
-INSERT INTO users (id, username, password, role, enabled, tokensLeft) VALUES
-('c38f66aa-d08c-464d-9471-53b2f81c081f', 'Alberto', 'Alberto', 'ADMIN', TRUE, 0),
-('b8a4ec3e-4bbf-4267-9756-12a6efbdb8ea', 'Test1', 'Test1', 'PLAYER', TRUE, 0),
-('d99a8b18-9b8f-4b4e-9cd7-8be12e372f22', 'Test2', 'Test2', 'PLAYER', TRUE, 0);
+INSERT INTO users (id, username, password, enabled, tokens_left, authorities) VALUES
+('c38f66aa-d08c-464d-9471-53b2f81c081f', 'Alberto', '$2a$10$otIpw1k.2yfgr.aAmQxg1u4rNYyKyidxng12q0Z8SJSbA.vF0MLMO', TRUE, 0, 'ADMIN'),
+('b8a4ec3e-4bbf-4267-9756-12a6efbdb8ea', 'Test1', '$2a$10$ZFug5t664t3BdrNWkGK6Xe3UhTI7FcLP5dETBczOLt/nNBYwt8C8K', TRUE, 0, 'PLAYER'),
+('d99a8b18-9b8f-4b4e-9cd7-8be12e372f22', 'Test2', '$2a$10$wYoGMWT.puEkRYvLqmAsvueBIX0W408BquX14UTi35LE.tpGf1YhC', TRUE, 0, 'PLAYER');

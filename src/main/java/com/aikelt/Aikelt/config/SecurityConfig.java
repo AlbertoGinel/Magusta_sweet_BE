@@ -1,5 +1,8 @@
 package com.aikelt.Aikelt.config;
 
+import com.aikelt.Aikelt.security.JwtAuthFilter;
+import com.aikelt.Aikelt.security.JwtService;
+import com.aikelt.Aikelt.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,30 +23,36 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     public SecurityConfig(UserDetailsService userDetailsService) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.userDetailsService = userDetailsService;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService, CustomUserDetailsService userService) throws Exception {
+
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/login", "/h2-ui/**", "/api/users/**").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeRequests(authorizeRequests ->
+                        authorizeRequests
+                                // Allow unauthenticated access to /api/auth/login
+                                .requestMatchers("/api/auth/login").permitAll()
+                                // Protect all other /api/** endpoints (authentication required)
+                                .requestMatchers("/api/**").authenticated()
+                                // All other requests require authentication
+                                .requestMatchers("/h2-ui/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .permitAll()
+                        .permitAll()  // Make the login page publicly accessible
                 )
-                .logout(logout -> logout.permitAll())
+                .logout(logout -> logout.permitAll())  // Allow logout without authentication
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/auth/login", "/h2-ui/**", "/api/users/**")
+                        // Disable CSRF protection for API endpoints (optional)
+                        .ignoringRequestMatchers("/api/**")
+                        .ignoringRequestMatchers("/h2-ui/**")
                 )
-                .headers(headers -> headers
-                        .contentSecurityPolicy(csp -> csp
-                                .policyDirectives("frame-ancestors 'self'")
-                        )
-                )
-                .authenticationProvider(authenticationProvider());  // Register DaoAuthenticationProvider here
+                // Add JwtAuthFilter before BasicAuthenticationFilter to process token
+                .addFilterBefore(new JwtAuthFilter(jwtService, userService), BasicAuthenticationFilter.class);
 
         return http.build();
     }
@@ -65,3 +75,9 @@ public class SecurityConfig {
         return authProvider;
     }
 }
+
+
+
+
+
+

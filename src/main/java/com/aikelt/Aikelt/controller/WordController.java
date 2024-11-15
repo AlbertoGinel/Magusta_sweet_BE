@@ -1,25 +1,29 @@
 package com.aikelt.Aikelt.controller;
 
-import com.aikelt.Aikelt.model.Game;
 import com.aikelt.Aikelt.model.DictionaryWord;
 import com.aikelt.Aikelt.model.PersonalWord;
+import com.aikelt.Aikelt.service.CustomUserDetailsService;
 import com.aikelt.Aikelt.service.WordService;
 import org.json.JSONArray;
-import org.json.JSONObject;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/words")
 public class WordController {
 
     private final WordService wordService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public WordController(WordService wordService ) {
+    public WordController(WordService wordService, CustomUserDetailsService customUserDetailsService) {
         this.wordService = wordService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @GetMapping("/allDictionaryWords")
@@ -32,12 +36,16 @@ public class WordController {
         return wordService.findAllPersonalWords();
     }
 
-    @PostMapping("/allPersonalWordsbyID")
-    public List<PersonalWord> findAllPersonalWordsbyID(@RequestBody Map<String, Object> requestBody) {
-        // Extract the UUID from the request body
-        UUID id = UUID.fromString((String) requestBody.get("id"));
+    @GetMapping("/allPersonalWordsbyID")
+    public List<PersonalWord> findAllPersonalWordsbyID() {
+        // Get the current authenticated user from the SecurityContext (i.e., token)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // or use custom user details if necessary
 
-        // Call the service with the extracted id
+        UUID id = customUserDetailsService.findIDByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found for username: " + username));
+
+        // Call the service with the extracted user and id
         return wordService.findAllPersonalWordsByUser(id);
     }
 
