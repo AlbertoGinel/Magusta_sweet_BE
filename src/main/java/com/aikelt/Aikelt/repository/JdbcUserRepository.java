@@ -2,6 +2,7 @@ package com.aikelt.Aikelt.repository;
 
 import com.aikelt.Aikelt.model.User;
 import com.aikelt.Aikelt.repository.mappers.UserRowMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,10 +32,14 @@ public class JdbcUserRepository {
     // Find a user by username
     public Optional<User> findUserByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
-        List<User> users = jdbcTemplate.query(sql, userRowMapper, username);
-        return users.stream().findFirst();
+        try {
+            User user = jdbcTemplate.queryForObject(sql, userRowMapper, username);
+            return Optional.ofNullable(user);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();  // No user found
+        }
     }
-
+    
     public Optional<UUID> findIDByUsername(String username) {
         String sql = "SELECT id FROM users WHERE username = ?";
         List<UUID> ids = jdbcTemplate.queryForList(sql, UUID.class, username);
